@@ -37,6 +37,7 @@
 <compilerflag value="-Ilibvpx" />
 <compilerflag value="-I${ANDROID_NDK_ROOT}/sources/cpufeatures" if="android"/>
 
+<file name="common/HxWebm.cpp" />
 <file name="common/ExternalInterface.cpp" />
 
 <file name="libwebm/vttreader.cc" />
@@ -129,7 +130,7 @@
 <files id="windows">
 </files>
 	
-<target id="NDLL" output="${name_prefix}nme-webp${name_extra}" tool="linker" toolid="${ndll-tool}">
+<target id="NDLL" output="${name_prefix}nme-webm${name_extra}" tool="linker" toolid="${ndll-tool}">
 	<outdir name="../ndll/${BINDIR}" />
 	<ext value=".ndll" unless="mobile"/>
 	<files id="common" />

@@ -1,0 +1,16 @@
+<project name="nme-webm" url="https://github.com/soywiz/haxe-nme-webm" license="MIT">
+	<user name="soywiz"/>
+	<tag v="nme"/>
+	<tag v="cpp"/>
+	<tag v="neko"/>
+	<tag v="webm"/>
+	<tag v="mkv"/>
+	<tag v="vp8"/>
+	<tag v="vorbis"/>
+	<tag v="video"/>
+	<tag v="formats"/>
+	<description>NME haxe extensions for decoding webm videos (mkv+vp8+vorbis).</description>
+	<version name="0.0.1">First release</version>
+	<depends name="nme"/>
+	<depends name="hxcpp"/>
+</project>
