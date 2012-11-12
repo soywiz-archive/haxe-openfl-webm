@@ -122,8 +122,7 @@
 <file name="libvpx/vp8/decoder/decodframe.c" />
 <file name="libvpx/vp8/decoder/detokenize.c" />
 <file name="libvpx/vp8/decoder/onyxd_if.c" />
-<file name="libvpx/vp8/decoder/threading.c" />
-<file name="libvpx/vpx_config.c" />
+<file name="libvpx/vpx_config.c" />
 
 </files>
 

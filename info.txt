@@ -1,16 +1,18 @@
 libvpx:
 
-$ ./configure  --target=generic-gnu --disable-examples --disable-docs --disable-unit-tests --disable-vp8-encoder
+Carlos@CARLOS-PC /cygdrive/c/projects/libvpx
+$ ./configure  --target=generic-gnu --disable-examples --disable-docs --disable-unit-tests --disable-vp8-encoder --disable-multithread
 Configuring selected codecs
   enabling vp8_decoder
 Configuring for target 'generic-gnu'
   enabling generic
 Creating makefiles for generic-gnu libs
 
+
 Carlos@CARLOS-PC /cygdrive/c/projects/libvpx
 $ make
+    [CREATE] vpx_rtcd.h
     [DEP] vpx_config.c.d
-    [DEP] vp8/decoder/threading.c.d
     [DEP] vp8/decoder/onyxd_if.c.d
     [DEP] vp8/decoder/detokenize.c.d
     [DEP] vp8/decoder/decodframe.c.d
@@ -18,7 +20,10 @@ $ make
     [DEP] vp8/decoder/dboolhuff.c.d
     [DEP] vp8/decoder/asm_dec_offsets.c.d
     [DEP] vp8/vp8_dx_iface.c.d
+    [DEP] vp8/common/treecoder.c.d
     [DEP] vp8/common/variance_c.c.d
+    [DEP] vp8/common/swapyv12buffer.c.d
+    [DEP] vp8/common/setupintrarecon.c.d
     [DEP] vp8/common/sad_c.c.d
     [DEP] vp8/common/reconintra4x4.c.d
     [DEP] vp8/common/reconintra.c.d
@@ -96,9 +101,7 @@ $ make
     [CC] vp8/decoder/decodframe.c.o
     [CC] vp8/decoder/detokenize.c.o
     [CC] vp8/decoder/onyxd_if.c.o
-    [CC] vp8/decoder/threading.c.o
     [CC] vpx_config.c.o
     [AR] libvpx_g.a
     [STRIP] libvpx.a < libvpx_g.a
     [CREATE] vpx.pc
-
