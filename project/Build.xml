@@ -1,0 +1,96 @@
+<xml>
+
+<include name="${HXCPP}/build-tool/BuildCommon.xml"/>
+
+<set name="iphonesim" value="1" if="ios" />
+<set name="iphoneos" value="1" if="ios" unless="simulator" />
+
+<set name="mobile" value="1" if="iphone"/>
+<set name="mobile" value="1" if="android"/>
+<set name="mobile" value="1" if="webos"/>
+<set name="mobile" value="1" if="blackberry"/>
+<set name="mobile" value="1" if="gph"/>
+
+<set name="IOS_ARCH" value="-v7" if="HXCPP_ARMV7" />
+
+<set name="ndll-tool" value="dll" unless="iphone"/>
+<set name="ndll-tool" value="static" if="iphone"/>
+<set name="name_extra" value=".iphonesim" if="iphonesim"/>
+<set name="name_extra" value=".iphoneos${IOS_ARCH}" if="iphoneos"/>
+
+<set name="name_extra" value="-x86" if="simulator" unless="iphonesim" />
+
+<set name="name_prefix" value="lib" if="iphone" />
+
+<set name="sse2" value="1" if="windows" />
+<set name="sse2" value="1" if="linux" />
+<set name="sse2" value="1" if="mac" />
+	
+<files id="common">
+
+<depend name="${HXCPP}/include/hx/Macros.h"/>
+<depend name="${HXCPP}/include/hx/CFFI.h"/>
+
+<compilerflag value="-Iinclude" />
+<compilerflag value="-Ilibogg/include" />
+<compilerflag value="-Ilibvorbis/include" />
+<compilerflag value="-I${ANDROID_NDK_ROOT}/sources/cpufeatures" if="android"/>
+
+<file name="common/ExternalInterface.cpp" />
+
+<file name="libwebm/vttreader.cc" />
+<file name="libwebm/webvttparser.cc" />
+<file name="libwebm/mkvmuxer.cpp" />
+<file name="libwebm/mkvmuxerutil.cpp" />
+<file name="libwebm/mkvparser.cpp" />
+<file name="libwebm/mkvreader.cpp" />
+<file name="libwebm/mkvwriter.cpp" />
+
+<file name="libogg/src/bitwise.c" />
+<file name="libogg/src/framing.c" />
+
+<file name="libvorbis/lib/analysis.c" />
+<file name="libvorbis/lib/bitrate.c" />
+<file name="libvorbis/lib/block.c" />
+<file name="libvorbis/lib/codebook.c" />
+<file name="libvorbis/lib/envelope.c" />
+<file name="libvorbis/lib/floor0.c" />
+<file name="libvorbis/lib/floor1.c" />
+<file name="libvorbis/lib/info.c" />
+<file name="libvorbis/lib/lookup.c" />
+<file name="libvorbis/lib/lpc.c" />
+<file name="libvorbis/lib/lsp.c" />
+<file name="libvorbis/lib/mapping0.c" />
+<file name="libvorbis/lib/mdct.c" />
+<file name="libvorbis/lib/psy.c" />
+<file name="libvorbis/lib/registry.c" />
+<file name="libvorbis/lib/res0.c" />
+<file name="libvorbis/lib/smallft.c" />
+<file name="libvorbis/lib/synthesis.c" />
+<file name="libvorbis/lib/vorbisenc.c" />
+<file name="libvorbis/lib/vorbisfile.c" />
+<file name="libvorbis/lib/window.c" />
+<file name="libvorbis/lib/sharedbook.c" />
+<!--
+<file name="libvorbis/lib/tone.c" />
+<file name="libvorbis/lib/barkmel.c" />
+<file name="libvorbis/lib/psytune.c" />
+-->
+
+</files>
+
+<files id="windows">
+</files>
+	
+<target id="NDLL" output="${name_prefix}nme-webp${name_extra}" tool="linker" toolid="${ndll-tool}">
+	<outdir name="../ndll/${BINDIR}" />
+	<ext value=".ndll" unless="mobile"/>
+	<files id="common" />
+	<files id="windows" if="windows"/>
+</target>
+
+<target id="default">
+	<target id="NDLL"/>
+</target>
+
+</xml>
