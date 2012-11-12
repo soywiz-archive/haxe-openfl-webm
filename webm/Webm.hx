@@ -38,6 +38,24 @@ class Webm {
 		var isKeyFrame:Bool = (info[2] != 0);
 		//trace(Std.format("decode($width, $height, $isKeyFrame)"));
 	}
+	
+	public function getAndRenderFrame(bitmapData:BitmapData):BitmapData {
+		var info:Array<Dynamic> = hx_vpx_codec_get_frame(this.context);
+		
+		if (info == null) return null;
+		
+		var width:Int = info[0];
+		var height:Int = info[1];
+		var byteArray:ByteArray = ByteArray.fromBytes(Bytes.ofData(info[2]));
+		bitmapData.lock();
+		bitmapData.setPixels(new Rectangle(0, 0, width, height), byteArray);
+		bitmapData.unlock(bitmapData.rect);
+		
+		info[2] = null;
+		info = null;
+		
+		return bitmapData;
+	}
 
 	public function getFrame():BitmapData {
 		var info:Array<Dynamic> = hx_vpx_codec_get_frame(this.context);
@@ -142,14 +160,9 @@ class Webm {
 		return hx_create_io(read, seek, tell);
 	}
 	
-	static public function testDecodeIvfFile(inputFileName:String, outputFileName:String) {
-		hx_vpx_test_decode_main(inputFileName, outputFileName);
-	}
-	
 	static var hx_vpx_codec_iface_name:Void -> String = cpp.Lib.load("nme-webm", "hx_vpx_codec_iface_name", 0);
 	static var hx_vpx_codec_dec_init:Void -> Dynamic = cpp.Lib.load("nme-webm", "hx_vpx_codec_dec_init", 0);
 	static var hx_vpx_codec_decode = cpp.Lib.load("nme-webm", "hx_vpx_codec_decode", 2);
 	static var hx_vpx_codec_get_frame = cpp.Lib.load("nme-webm", "hx_vpx_codec_get_frame", 1);
-	static var hx_vpx_test_decode_main = cpp.Lib.load("nme-webm", "hx_vpx_test_decode_main", 2);
 	static var hx_create_io = cpp.Lib.load("nme-webm", "hx_create_io", 3);
 }

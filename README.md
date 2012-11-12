@@ -21,5 +21,14 @@ addChild(sprite);
 
 var io:WebmIo = new WebmIoFile("c:/projects/test.webm");
 var player:WebmPlayer = new WebmPlayer(io, sprite);
+player.addEventListener('play', function(e) {
+	trace('play!');
+});
+player.addEventListener('end', function(e) {
+	trace('end!');
+});
+player.addEventListener('stop', function(e) {
+	trace('stop!');
+});
 player.play();
 ```

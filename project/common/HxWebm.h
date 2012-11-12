@@ -5,6 +5,11 @@
 #include "vpx/vpx_decoder.h"
 #include "vpx/vp8dx.h"
 
+#include <hxcpp.h>
+//#include <hx/Macros.h>
+#include <hx/CFFI.h>
+//#include <hx/CFFIAPI.h>
+
 typedef unsigned int uint32;
 typedef unsigned short uint16;
 typedef unsigned char uint8;

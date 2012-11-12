@@ -101,11 +101,6 @@ extern "C" {
 		return array;
 	}
 	
-	DEFINE_FUNC_2(hx_vpx_test_decode_main, in_filename_value, out_filename_value) {
-		test_decode_main((const char *)val_string(in_filename_value), (const char *)val_string(out_filename_value));
-		return alloc_null();
-	}
-	
 	DEFINE_FUNC_1(hx_vpx_codec_get_frame, codec_context_value) {
 		vpx_image_t *img = _vpx_codec_get_frame(_get_codec_context_from_value(codec_context_value));
 		//printf("img: %p\n", img);
@@ -257,6 +252,8 @@ extern "C" {
 			long long timeCode;
 			bool startCluster;
 			bool hasMore;
+			int width, height;
+			double frameRate;
 			
 			MkvProcessor(IoMkvReader *reader) {
 				//printf("MkvProcessor\n"); fflush(stdout);
@@ -268,6 +265,9 @@ extern "C" {
 				this->timeCode = 0;
 				this->reader = reader;
 				this->hasMore = true;
+				this->width = 0;
+				this->height = 0;
+				this->frameRate = 30;
 			}
 			
 			~MkvProcessor() {
@@ -412,10 +412,13 @@ extern "C" {
 					if (trackType == mkvparser::Track::kVideo)
 					{
 						const VideoTrack* const pVideoTrack = static_cast<const VideoTrack*>(pTrack);
+						this->width = pVideoTrack->GetWidth();
+						this->height = pVideoTrack->GetHeight();
+						this->frameRate = pVideoTrack->GetFrameRate();
 
-						printf("\t\tVideo Width\t\t: %lld\n", pVideoTrack->GetWidth());
-						printf("\t\tVideo Height\t\t: %lld\n", pVideoTrack->GetHeight());
-						printf("\t\tVideo Rate\t\t: %f\n", pVideoTrack->GetFrameRate());
+						printf("\t\tVideo Width\t\t: %lld\n", this->width);
+						printf("\t\tVideo Height\t\t: %lld\n", this->height);
+						printf("\t\tVideo Rate\t\t: %f\n", this->frameRate);
 					}
 
 					if (trackType == mkvparser::Track::kAudio)
@@ -445,6 +448,8 @@ extern "C" {
 			}
 			
 			int parseStep(value decode_video, value decode_audio) {
+				if (!this->hasMore) return 0;
+			
 				if (startCluster) {
 					//printf("startCluster\n"); fflush(stdout);
 					if (pCluster == NULL) {
@@ -453,6 +458,7 @@ extern "C" {
 						pCluster = pSegment->GetNext(pCluster);
 					}
 					this->hasMore = ((pCluster != NULL) && !pCluster->EOS());
+					if (!this->hasMore) return 0;
 					
 					pBlockEntry = NULL;
 					startCluster = false;
@@ -529,9 +535,9 @@ extern "C" {
 		}
 		
 		static void release_MkvProcessor(value _value) {
-			printf("release_MkvProcessor\n"); fflush(stdout);
-			//MkvProcessor* processor = _get_MkvProcessor_from_value(_value);
-			//delete processor;
+			//printf("release_MkvProcessor\n"); fflush(stdout);
+			MkvProcessor* processor = _get_MkvProcessor_from_value(_value);
+			delete processor;
 		}
 
 		DEFINE_FUNC_1(hx_webm_decoder_create, io_value) {
@@ -555,6 +561,15 @@ extern "C" {
 		DEFINE_FUNC_1(hx_webm_decoder_has_more, processor_value) {
 			MkvProcessor* processor = _get_MkvProcessor_from_value(processor_value);
 			return alloc_bool(processor->hasMore);
+		}
+		
+		DEFINE_FUNC_1(hx_webm_decoder_get_info, processor_value) {
+			MkvProcessor* processor = _get_MkvProcessor_from_value(processor_value);
+			value array = alloc_array(3);
+			val_array_set_i(array, 0, alloc_int(processor->width));
+			val_array_set_i(array, 1, alloc_int(processor->height));
+			val_array_set_i(array, 3, alloc_float(processor->frameRate));
+			return array;
 		}
 
 		DEFINE_FUNC_3(hx_webm_decoder_step, processor_value, decode_video_value, decode_audio_value) {
