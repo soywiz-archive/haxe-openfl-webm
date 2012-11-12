@@ -508,7 +508,8 @@ mkvmuxer::uint64 mkvmuxer::MakeUID(unsigned int* seed) {
   for (int i = 0; i < 7; ++i) {  // avoid problems with 8-byte values
     uid <<= 8;
 
-    const int32 nn = rand_r(seed);
+	srand(*seed);
+    const int32 nn = rand();
     const int32 n = 0xFF & (nn >> 4);  // throw away low-order bits
 
     uid |= n;
