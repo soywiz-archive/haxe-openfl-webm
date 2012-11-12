@@ -2,7 +2,9 @@ package webm;
 import haxe.io.Bytes;
 import haxe.io.BytesData;
 import nme.display.Bitmap;
+import nme.display.PixelSnapping;
 import nme.display.Sprite;
+import nme.events.Event;
 import nme.utils.Endian;
 import nme.utils.Timer;
 import sys.io.File;
@@ -54,13 +56,26 @@ class Webm {
 
 	static inline var IVF_FILE_HDR_SZ:Int = (32);
 	static inline var IVF_FRAME_HDR_SZ:Int = (12);
+	
+	/**
+	 * Decodes a webm video file.
+	 * 
+	 * @param	filePath
+	 * @param	sprite
+	 */
+	public function decodeWebm(filePath:String, sprite:Sprite):Void {
+		var fileInput:FileInput = File.read(filePath, true);
+	}
 
 	/**
 	 * Decodes a raw V8 video file.
+	 * 
+	 * @param	filePath
+	 * @param	sprite
 	 */
-	public function decodeIvf(ivfFilePath:String, sprite:Sprite) {
-		var fi:FileInput = File.read(ivfFilePath, true);
-		var header:ByteArray = ByteArray.fromBytes(fi.read(IVF_FILE_HDR_SZ));
+	public function decodeIvf(filePath:String, sprite:Sprite):Void {
+		var fileInput:FileInput = File.read(filePath, true);
+		var header:ByteArray = ByteArray.fromBytes(fileInput.read(IVF_FILE_HDR_SZ));
 		header.endian = Endian.LITTLE_ENDIAN;
 		if (header.readUTFBytes(4) != "DKIF") throw(new Error("Not a IVF raw V8 file"));
 		var fileVersion:Int = header.readUnsignedShort();
@@ -86,71 +101,115 @@ class Webm {
 		} else {
 			// Don't know FPS for sure, and don't have readahead code
 			// (yet?), so just default to 30fps.
-			fpsNum = 60;
+			fpsNum = 30;
 			fpsDen = 1;
 		}
 
-		//trace(Std.format("$fpsNum/$fpsDen"));
-
 		var fps:Float = fpsNum / fpsDen;
-		
-		/*
-		if (!(
-			(header.get(0) == cast 'D'.charCodeAt(0)) &&
-			(header.get(1) == cast 'K'.charCodeAt(0)) &&
-			(header.get(2) == cast 'I'.charCodeAt(0)) &&
-			(header.get(3) == cast 'F'.charCodeAt(0))
-		)) {
-			throw(new Error("Not a IVF raw V8 file"));
-		}
-		*/
 		
 		var decodeIvfTick:Dynamic = null;
 		decodeIvfTick = function() {
-			var count:Int = 0;
-			while (!fi.eof()) {
-				var frameHeader:ByteArray = ByteArray.fromBytes(fi.read(IVF_FRAME_HDR_SZ));
+			// Schedule next decoding.
+			haxe.Timer.delay(decodeIvfTick, Std.int(1000 / fps));
+
+			while (!fileInput.eof()) {
+				var frameHeader:ByteArray = ByteArray.fromBytes(fileInput.read(IVF_FRAME_HDR_SZ));
 				frameHeader.endian = Endian.LITTLE_ENDIAN;
 				var frameSize:Int = frameHeader.readInt();
 				
 				//trace("Frame: " + fi.tell() + " : " + frameSize);
 				
-				var frameBytes:ByteArray = ByteArray.fromBytes(fi.read(frameSize));
+				var frameBytes:ByteArray = ByteArray.fromBytes(fileInput.read(frameSize));
 				if (frameBytes.length != frameSize) throw(new Error("Invalid data"));
 
 				decode(frameBytes);
-				if (true) {
-					//trace(1);
-					var frameBitmapData:BitmapData = getFrame();
-					//trace(2);
-
-					//trace(frameSize + ":" + (frameBitmapData != null));
-					
-					if (frameBitmapData != null) {
-						while (sprite.numChildren > 0) sprite.removeChildAt(0);
-						sprite.addChild(new Bitmap(frameBitmapData));
-						break;
-					}
+				var frameBitmapData:BitmapData;
+				var emittedImage:Bool = false;
+				while ((frameBitmapData = getFrame()) != null) {
+					replaceSpriteWithBitmapData(sprite, frameBitmapData);
+					emittedImage = true;
 				}
-				count++;
-				//if (count >= 100) break;
-				//if (count >= 20) break;
+				
+				if (emittedImage) break;
 			}
-
-			haxe.Timer.delay(decodeIvfTick, Std.int(1000 / fps));
 		};
 
 		decodeIvfTick();
+	}
+	
+	static private function replaceSpriteWithBitmapData(sprite:Sprite, bitmapData:BitmapData):Void {
+		while (sprite.numChildren > 0) sprite.removeChildAt(0);
+		sprite.addChild(new Bitmap(bitmapData, PixelSnapping.AUTO, true));
+	}
+	
+	static public function parseWebm(io:WebmIo, sprite:Sprite) {
+		var webm:Webm = new Webm();
+		var decoder = hx_webm_decoder_create(io.io);
+		var startTime:Float = haxe.Timer.stamp();
+		var elapsedTime:Float = 0;
+		var lastDecodedVideoFrame:Float = 0;
+		
+		function decodeVideoFrame(time:Float, data:BytesData):Void {
+			lastDecodedVideoFrame = time;
+			trace("DECODE VIDEO FRAME! " + elapsedTime + ":" + time);
+			//return;
+			webm.decode(ByteArray.fromBytes(Bytes.ofData(data)));
+			var bmp:BitmapData = webm.getFrame();
+			if (bmp != null) {
+				replaceSpriteWithBitmapData(sprite, bmp);
+			}
+		}
+		
+		function decodeAudioFrame(time:Float, data:BytesData):Void {
+			trace("DECODE AUDIO FRAME! " + elapsedTime + ":" + time);
+		}
+		
+		sprite.addEventListener("enterFrame", function(e:Event) {
+			//trace("decodeStep");
+			
+			while (hx_webm_decoder_has_more(decoder) && lastDecodedVideoFrame < (elapsedTime = (haxe.Timer.stamp() - startTime))) {
+				hx_webm_decoder_step(decoder, decodeVideoFrame, decodeAudioFrame);
+			}
+		});
+
+		/*
+		while (hx_webm_decoder_has_more(decoder)) {
+			hx_webm_decoder_step(decoder, decodeVideoFrame, decodeAudioFrame);
+		}
+		*/
+
+		/*
+		function decodeStep() {
+			
+			haxe.Timer.delay(decodeStep, Std.int(10));
+			trace("decodeStep");
+			
+			if (hx_webm_decoder_has_more(decoder)) {
+				hx_webm_decoder_step(decoder, decodeVideoFrame, decodeAudioFrame);
+			}
+			
+		}
+		
+		decodeStep();
+		*/
+	}
+	
+	static public function createIo(read:Int -> BytesData, seek:Float -> Int -> Int, tell:Void -> Float):Dynamic {
+		return hx_create_io(read, seek, tell);
 	}
 	
 	static public function testDecodeIvfFile(inputFileName:String, outputFileName:String) {
 		hx_vpx_test_decode_main(inputFileName, outputFileName);
 	}
 	
-	static var hx_vpx_codec_iface_name = cpp.Lib.load("nme-webm", "hx_vpx_codec_iface_name", 0);
-	static var hx_vpx_codec_dec_init = cpp.Lib.load("nme-webm", "hx_vpx_codec_dec_init", 0);
+	static var hx_vpx_codec_iface_name:Void -> String = cpp.Lib.load("nme-webm", "hx_vpx_codec_iface_name", 0);
+	static var hx_vpx_codec_dec_init:Void -> Dynamic = cpp.Lib.load("nme-webm", "hx_vpx_codec_dec_init", 0);
 	static var hx_vpx_codec_decode = cpp.Lib.load("nme-webm", "hx_vpx_codec_decode", 2);
 	static var hx_vpx_codec_get_frame = cpp.Lib.load("nme-webm", "hx_vpx_codec_get_frame", 1);
 	static var hx_vpx_test_decode_main = cpp.Lib.load("nme-webm", "hx_vpx_test_decode_main", 2);
+	static var hx_create_io = cpp.Lib.load("nme-webm", "hx_create_io", 3);
 	
+	static var hx_webm_decoder_create = cpp.Lib.load("nme-webm", "hx_webm_decoder_create", 1);
+	static var hx_webm_decoder_has_more = cpp.Lib.load("nme-webm", "hx_webm_decoder_has_more", 1);
+	static var hx_webm_decoder_step = cpp.Lib.load("nme-webm", "hx_webm_decoder_step", 3);
 }

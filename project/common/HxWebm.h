@@ -5,6 +5,16 @@
 #include "vpx/vpx_decoder.h"
 #include "vpx/vp8dx.h"
 
+typedef unsigned int uint32;
+typedef unsigned short uint16;
+typedef unsigned char uint8;
+
+typedef struct {
+	value func_read;
+	value func_seek;
+	value func_tell;
+} io_struct;
+
 typedef struct HxWebmContext {
 	vpx_codec_ctx_t context;
 	vpx_codec_err_t res;
@@ -21,5 +31,6 @@ extern void _vpx_codec_destroy(HxWebmContext *codecPointer);
 extern vpx_codec_err_t _vpx_codec_decode(HxWebmContext *codecPointer, char *framePointer, int frameSize);
 extern vpx_image_t *_vpx_codec_get_frame(HxWebmContext *codecPointer);
 extern int test_decode_main(const char *infileName, const char* outfileName);
+extern void YUV420toRGBA(uint8* Y, uint8* U, uint8* V, int words_per_line, int width, int height, uint32* pixdata, int y_stride, int uv_stride);
 
 #endif
