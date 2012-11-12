@@ -1,0 +1,104 @@
+libvpx:
+
+$ ./configure  --target=generic-gnu --disable-examples --disable-docs --disable-unit-tests --disable-vp8-encoder
+Configuring selected codecs
+  enabling vp8_decoder
+Configuring for target 'generic-gnu'
+  enabling generic
+Creating makefiles for generic-gnu libs
+
+Carlos@CARLOS-PC /cygdrive/c/projects/libvpx
+$ make
+    [DEP] vpx_config.c.d
+    [DEP] vp8/decoder/threading.c.d
+    [DEP] vp8/decoder/onyxd_if.c.d
+    [DEP] vp8/decoder/detokenize.c.d
+    [DEP] vp8/decoder/decodframe.c.d
+    [DEP] vp8/decoder/decodemv.c.d
+    [DEP] vp8/decoder/dboolhuff.c.d
+    [DEP] vp8/decoder/asm_dec_offsets.c.d
+    [DEP] vp8/vp8_dx_iface.c.d
+    [DEP] vp8/common/variance_c.c.d
+    [DEP] vp8/common/sad_c.c.d
+    [DEP] vp8/common/reconintra4x4.c.d
+    [DEP] vp8/common/reconintra.c.d
+    [DEP] vp8/common/reconinter.c.d
+    [DEP] vp8/common/quant_common.c.d
+    [DEP] vp8/common/modecont.c.d
+    [DEP] vp8/common/mbpitch.c.d
+    [DEP] vp8/common/loopfilter_filters.c.d
+    [DEP] vp8/common/loopfilter.c.d
+    [DEP] vp8/common/rtcd.c.d
+    [DEP] vp8/common/idctllm.c.d
+    [DEP] vp8/common/idct_blk.c.d
+    [DEP] vp8/common/generic/systemdependent.c.d
+    [DEP] vp8/common/findnearmv.c.d
+    [DEP] vp8/common/filter.c.d
+    [DEP] vp8/common/extend.c.d
+    [DEP] vp8/common/entropymv.c.d
+    [DEP] vp8/common/entropymode.c.d
+    [DEP] vp8/common/entropy.c.d
+    [DEP] vp8/common/dequantize.c.d
+    [DEP] vp8/common/debugmodes.c.d
+    [DEP] vp8/common/blockd.c.d
+    [DEP] vp8/common/asm_com_offsets.c.d
+    [DEP] vp8/common/alloccommon.c.d
+    [DEP] vpx_scale/generic/gen_scalers.c.d
+    [DEP] vpx_scale/generic/yv12extend.c.d
+    [DEP] vpx_scale/generic/yv12config.c.d
+    [DEP] vpx_scale/generic/vpxscale.c.d
+    [DEP] vpx_mem/vpx_mem.c.d
+    [DEP] vpx/src/vpx_image.c.d
+    [DEP] vpx/src/vpx_codec.c.d
+    [DEP] vpx/src/vpx_encoder.c.d
+    [DEP] vpx/src/vpx_decoder.c.d
+    [CC] vpx/src/vpx_decoder.c.o
+    [CC] vpx/src/vpx_encoder.c.o
+    [CC] vpx/src/vpx_codec.c.o
+    [CC] vpx/src/vpx_image.c.o
+    [CC] vpx_mem/vpx_mem.c.o
+    [CC] vpx_scale/generic/vpxscale.c.o
+    [CC] vpx_scale/generic/yv12config.c.o
+    [CC] vpx_scale/generic/yv12extend.c.o
+    [CC] vpx_scale/generic/gen_scalers.c.o
+    [CC] vp8/common/alloccommon.c.o
+    [CC] vp8/common/asm_com_offsets.c.o
+    [CC] vp8/common/blockd.c.o
+    [CC] vp8/common/debugmodes.c.o
+    [CC] vp8/common/dequantize.c.o
+    [CC] vp8/common/entropy.c.o
+    [CC] vp8/common/entropymode.c.o
+    [CC] vp8/common/entropymv.c.o
+    [CC] vp8/common/extend.c.o
+    [CC] vp8/common/filter.c.o
+    [CC] vp8/common/findnearmv.c.o
+    [CC] vp8/common/generic/systemdependent.c.o
+    [CC] vp8/common/idct_blk.c.o
+    [CC] vp8/common/idctllm.c.o
+    [CC] vp8/common/rtcd.c.o
+    [CC] vp8/common/loopfilter.c.o
+    [CC] vp8/common/loopfilter_filters.c.o
+    [CC] vp8/common/mbpitch.c.o
+    [CC] vp8/common/modecont.c.o
+    [CC] vp8/common/quant_common.c.o
+    [CC] vp8/common/reconinter.c.o
+    [CC] vp8/common/reconintra.c.o
+    [CC] vp8/common/reconintra4x4.c.o
+    [CC] vp8/common/sad_c.c.o
+    [CC] vp8/common/setupintrarecon.c.o
+    [CC] vp8/common/swapyv12buffer.c.o
+    [CC] vp8/common/variance_c.c.o
+    [CC] vp8/common/treecoder.c.o
+    [CC] vp8/vp8_dx_iface.c.o
+    [CC] vp8/decoder/asm_dec_offsets.c.o
+    [CC] vp8/decoder/dboolhuff.c.o
+    [CC] vp8/decoder/decodemv.c.o
+    [CC] vp8/decoder/decodframe.c.o
+    [CC] vp8/decoder/detokenize.c.o
+    [CC] vp8/decoder/onyxd_if.c.o
+    [CC] vp8/decoder/threading.c.o
+    [CC] vpx_config.c.o
+    [AR] libvpx_g.a
+    [STRIP] libvpx.a < libvpx_g.a
+    [CREATE] vpx.pc
+
