@@ -7,7 +7,10 @@ import nme.display.PixelSnapping;
 import nme.display.Sprite;
 import nme.events.Event;
 import nme.events.EventDispatcher;
+import nme.events.SampleDataEvent;
+import nme.media.Sound;
 import nme.utils.ByteArray;
+import nme.utils.Endian;
 import webm.internal.WebmUtils;
 
 class WebmPlayer extends EventDispatcher {
@@ -20,10 +23,14 @@ class WebmPlayer extends EventDispatcher {
 	var startTime:Float = 0;
 	var lastDecodedVideoFrame:Float = 0;
 	var playing:Bool = false;
+	var renderedCount:Int = 0;
 	
 	public var width:Int;
 	public var height:Int;
 	public var frameRate:Float;
+	public var duration:Float;
+	
+	var sound:Sound;
 
 	public function new(io:WebmIo, targetSprite:Sprite) {
 		super();
@@ -35,9 +42,49 @@ class WebmPlayer extends EventDispatcher {
 		this.width = info[0];
 		this.height = info[1];
 		this.frameRate = info[2];
+		this.duration = info[3];
 		this.bitmapData = new BitmapData(this.width, this.height);
 		this.bitmap = new Bitmap(this.bitmapData, PixelSnapping.AUTO, true);
 		targetSprite.addChild(this.bitmap);
+		this.outputSound = new ByteArray();
+		this.outputSound.endian = Endian.LITTLE_ENDIAN;
+		this.sound = new Sound();
+		this.sound.addEventListener(SampleDataEvent.SAMPLE_DATA, generateSound);
+		this.sound.play();
+	}
+	
+	public var amp_multiplier_right:Float = 0.5;
+	public var amp_multiplier_left:Float = 0.5;
+	//public var freq_right:Float = 580;
+	//public var freq_left:Float = 580;
+
+	inline public static var SAMPLING_RATE:Int = 44100;
+	//inline public static var TWO_PI:Float = 2*Math.PI;
+	//inline public static var TWO_PI_OVER_SR:Float = TWO_PI/SAMPLING_RATE;
+	var outputSound:ByteArray;
+	
+	public function generateSound(e:SampleDataEvent):Void {
+
+		var samplel:Float;
+		var sampler:Float;
+
+		for (i in 0 ... 8192) {
+			//samplel = Math.sin((i + e.position) * TWO_PI_OVER_SR * freq_left);
+			//sampler = Math.sin((i + e.position) * TWO_PI_OVER_SR * freq_right);
+			if (this.outputSound.bytesAvailable >= 8) {
+				samplel = this.outputSound.readFloat();
+				sampler = this.outputSound.readFloat();
+				//trace(samplel + " : " + sampler);
+				//trace(this.outputSound.bytesAvailable);
+			} else {
+				samplel = sampler = 0;
+			}
+
+			e.data.writeFloat(samplel * amp_multiplier_left);
+			e.data.writeFloat(sampler * amp_multiplier_right);
+		}
+		
+		this.outputSound.clear();
 	}
 	
 	public function getElapsedTime():Float {
@@ -63,8 +110,12 @@ class WebmPlayer extends EventDispatcher {
 	}
 	
 	private function onSpriteEnterFrame(e:Event) {
+		var startRenderedCount = renderedCount;
+
 		while (hx_webm_decoder_has_more(decoder) && lastDecodedVideoFrame < getElapsedTime()) {
-			hx_webm_decoder_step(decoder, decodeVideoFrame, decodeAudioFrame);
+		//while (hx_webm_decoder_has_more(decoder)) {
+			hx_webm_decoder_step(decoder, decodeVideoFrame, outputAudioFrame);
+			if (renderedCount > startRenderedCount) break;
 		}
 		
 		if (!hx_webm_decoder_has_more(decoder)) {
@@ -75,12 +126,24 @@ class WebmPlayer extends EventDispatcher {
 
 	private function decodeVideoFrame(time:Float, data:BytesData):Void {
 		lastDecodedVideoFrame = time;
+		renderedCount++;
+		
 		//trace("DECODE VIDEO FRAME! " + getElapsedTime() + ":" + time);
-		webm.decode(ByteArray.fromBytes(Bytes.ofData(data)));
-		webm.getAndRenderFrame(this.bitmapData);
+		var decodeTime:Float = WebmUtils.measureTime(function() {
+			webm.decode(ByteArray.fromBytes(Bytes.ofData(data)));
+		});
+		var renderTime:Float = WebmUtils.measureTime(function() {
+			webm.getAndRenderFrame(this.bitmapData);
+		});
+		
+		//trace("Profiling Times: decode=" + decodeTime + " ; render=" + renderTime);
 	}
 	
-	private function decodeAudioFrame(time:Float, data:BytesData):Void {
+	private function outputAudioFrame(time:Float, data:BytesData):Void {
+		var byteArray:ByteArray = ByteArray.fromBytes(Bytes.ofData(data));
+		this.outputSound.position = this.outputSound.length;
+		this.outputSound.writeBytes(byteArray, 0, byteArray.length);
+		this.outputSound.position = 0;
 		//trace("DECODE AUDIO FRAME! " + getElapsedTime() + ":" + time);
 	}
 	
