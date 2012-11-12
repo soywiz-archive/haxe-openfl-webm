@@ -9,6 +9,7 @@ import nme.utils.Endian;
 import nme.utils.Timer;
 import sys.io.File;
 import sys.io.FileInput;
+import webm.internal.WebmUtils;
 #if (cpp || neko)
 import neash.utils.ByteArray;
 #else
@@ -126,7 +127,7 @@ class Webm {
 				var frameBitmapData:BitmapData;
 				var emittedImage:Bool = false;
 				while ((frameBitmapData = getFrame()) != null) {
-					replaceSpriteWithBitmapData(sprite, frameBitmapData);
+					WebmUtils.replaceSpriteWithBitmapData(sprite, frameBitmapData);
 					emittedImage = true;
 				}
 				
@@ -135,63 +136,6 @@ class Webm {
 		};
 
 		decodeIvfTick();
-	}
-	
-	static private function replaceSpriteWithBitmapData(sprite:Sprite, bitmapData:BitmapData):Void {
-		while (sprite.numChildren > 0) sprite.removeChildAt(0);
-		sprite.addChild(new Bitmap(bitmapData, PixelSnapping.AUTO, true));
-	}
-	
-	static public function parseWebm(io:WebmIo, sprite:Sprite) {
-		var webm:Webm = new Webm();
-		var decoder = hx_webm_decoder_create(io.io);
-		var startTime:Float = haxe.Timer.stamp();
-		var elapsedTime:Float = 0;
-		var lastDecodedVideoFrame:Float = 0;
-		
-		function decodeVideoFrame(time:Float, data:BytesData):Void {
-			lastDecodedVideoFrame = time;
-			trace("DECODE VIDEO FRAME! " + elapsedTime + ":" + time);
-			//return;
-			webm.decode(ByteArray.fromBytes(Bytes.ofData(data)));
-			var bmp:BitmapData = webm.getFrame();
-			if (bmp != null) {
-				replaceSpriteWithBitmapData(sprite, bmp);
-			}
-		}
-		
-		function decodeAudioFrame(time:Float, data:BytesData):Void {
-			trace("DECODE AUDIO FRAME! " + elapsedTime + ":" + time);
-		}
-		
-		sprite.addEventListener("enterFrame", function(e:Event) {
-			//trace("decodeStep");
-			
-			while (hx_webm_decoder_has_more(decoder) && lastDecodedVideoFrame < (elapsedTime = (haxe.Timer.stamp() - startTime))) {
-				hx_webm_decoder_step(decoder, decodeVideoFrame, decodeAudioFrame);
-			}
-		});
-
-		/*
-		while (hx_webm_decoder_has_more(decoder)) {
-			hx_webm_decoder_step(decoder, decodeVideoFrame, decodeAudioFrame);
-		}
-		*/
-
-		/*
-		function decodeStep() {
-			
-			haxe.Timer.delay(decodeStep, Std.int(10));
-			trace("decodeStep");
-			
-			if (hx_webm_decoder_has_more(decoder)) {
-				hx_webm_decoder_step(decoder, decodeVideoFrame, decodeAudioFrame);
-			}
-			
-		}
-		
-		decodeStep();
-		*/
 	}
 	
 	static public function createIo(read:Int -> BytesData, seek:Float -> Int -> Int, tell:Void -> Float):Dynamic {
@@ -208,8 +152,4 @@ class Webm {
 	static var hx_vpx_codec_get_frame = cpp.Lib.load("nme-webm", "hx_vpx_codec_get_frame", 1);
 	static var hx_vpx_test_decode_main = cpp.Lib.load("nme-webm", "hx_vpx_test_decode_main", 2);
 	static var hx_create_io = cpp.Lib.load("nme-webm", "hx_create_io", 3);
-	
-	static var hx_webm_decoder_create = cpp.Lib.load("nme-webm", "hx_webm_decoder_create", 1);
-	static var hx_webm_decoder_has_more = cpp.Lib.load("nme-webm", "hx_webm_decoder_has_more", 1);
-	static var hx_webm_decoder_step = cpp.Lib.load("nme-webm", "hx_webm_decoder_step", 3);
 }
