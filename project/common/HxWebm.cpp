@@ -5,6 +5,10 @@
 
 #include "HxWebm.h"
 
+#ifndef NULL
+#define NULL 0
+#endif
+
 #define interface vpx_codec_vp8_dx()
 
 #define IVF_FILE_HDR_SZ  (32)

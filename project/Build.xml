@@ -29,6 +29,7 @@
 <compilerflag value="-Iinclude" />
 <compilerflag value="-Ilibogg/include" />
 <compilerflag value="-Ilibvorbis/include" />
+<compilerflag value="-Ilibvorbis/lib" />
 <compilerflag value="-Ilibvpx" />
 <compilerflag value="-I${ANDROID_NDK_ROOT}/sources/cpufeatures" if="android"/>
 
@@ -87,6 +88,10 @@
 
 	<flag value="-libpath:../libs/Windows" if="windows"/>
 	<lib name="vpx.lib" if="windows"/>
+
+	<flag value="-L../libs/Linux" if="linux"/>
+	<lib name="-lvpx" if="linux"/>
+	<lib name="-lpthread" if="linux"/>
 </target>
 
 <target id="default">

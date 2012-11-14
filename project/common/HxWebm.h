@@ -5,6 +5,8 @@
 #include "vpx/vpx_decoder.h"
 #include "vpx/vp8dx.h"
 
+#include <stdlib.h>
+
 #include <hxcpp.h>
 //#include <hx/Macros.h>
 #include <hx/CFFI.h>
