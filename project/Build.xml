@@ -30,7 +30,7 @@
 <compilerflag value="-Ilibogg/include" />
 <compilerflag value="-Ilibvorbis/include" />
 <compilerflag value="-Ilibvorbis/lib" />
-<compilerflag value="-Ilibvpx" />
+<compilerflag value="-I../libs.src/libvpx" />
 <compilerflag value="-I${ANDROID_NDK_ROOT}/sources/cpufeatures" if="android"/>
 
 <file name="common/HxWebm.cpp" />
@@ -92,6 +92,10 @@
 	<flag value="-L../libs/Linux" if="linux"/>
 	<lib name="-lvpx" if="linux"/>
 	<lib name="-lpthread" if="linux"/>
+
+	<flag value="-L../libs/Mac" if="macos"/>
+	<lib name="-lvpx" if="macos"/>
+	<lib name="-lpthread" if="macos"/>
 </target>
 
 <target id="default">
