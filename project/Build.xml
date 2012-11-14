@@ -90,6 +90,7 @@
 -->
 </files>
 
+<!--
 <files id="libvpx">
 <depend name="${HXCPP}/include/hx/Macros.h"/>
 <depend name="${HXCPP}/include/hx/CFFI.h"/>
@@ -147,13 +148,13 @@
 Åè<file name="../libs.src/libvpx/vp8/decoder/onyxd_if.c" />
 <file name="../libs.src/libvpx/vpx_config.c" />
 </files>
+-->
 	
 <target id="NDLL" output="${name_prefix}nme-webm${name_extra}" tool="linker" toolid="${ndll-tool}">
 	<outdir name="../ndll/${BINDIR}" />
 	<ext value=".ndll" unless="mobile"/>
 	<files id="common" />	
 	<files id="libs" />	
-	<files id="libvpx" if="macos"/>
 
 	<flag value="-libpath:../libs/Windows" if="windows"/>
 	<lib name="vpx.lib" if="windows"/>
@@ -161,6 +162,10 @@
 	<flag value="-L../libs/Linux" if="linux"/>
 	<lib name="-lvpx" if="linux"/>
 	<lib name="-lpthread" if="linux"/>
+
+	<flag value="-L../libs/Mac" if="macos"/>
+	<lib name="-lvpx" if="macos"/>
+	<lib name="-lpthread" if="macos"/>
 </target>
 
 <target id="default">
