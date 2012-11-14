@@ -13,6 +13,7 @@
 #include <hxcpp.h>
 #include <string.h>
 #include <stdio.h>
+#include <cstdlib>
 #include <assert.h>
 #include <math.h>
 #include "HxWebm.h"
@@ -224,6 +225,12 @@ extern "C" {
 		
 		static const wchar_t* utf8towcs(const char* str)
 		{
+		#if ANDROID
+			int len = strlen(str);
+			wchar_t* const val = new wchar_t[len + 1];
+			for (int n = 0; n < len; n++) val[n] = str[n];
+			val[len] = 0;
+		#else
 			if (str == NULL)
 				return NULL;
 
@@ -239,7 +246,7 @@ extern "C" {
 
 			mbstowcs(val, str, size);
 			val[size] = L'\0';
-
+		#endif
 			return val;
 		}
 		
