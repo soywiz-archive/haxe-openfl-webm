@@ -10,7 +10,7 @@
 	<tag v="video"/>
 	<tag v="formats"/>
 	<description>NME haxe extensions for decoding webm videos (mkv+vp8+vorbis).</description>
-	<version name="0.0.3">Changed build system. Now libvpx is built outside with optimizations.</version>
+	<version name="0.0.4">New builds.</version>
 	<depends name="nme"/>
 	<depends name="hxcpp"/>
 </project>
