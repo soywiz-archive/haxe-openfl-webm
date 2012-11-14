@@ -1,0 +1,8 @@
+0.0.3
+	Changed build system. Now libvpx is built outside with optimizations.
+
+0.0.2
+	Audio support and fixes
+
+0.0.1
+	First release

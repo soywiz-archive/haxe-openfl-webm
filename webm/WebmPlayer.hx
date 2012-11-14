@@ -67,7 +67,7 @@ class WebmPlayer extends EventDispatcher {
 
 		var samplel:Float;
 		var sampler:Float;
-
+		
 		for (i in 0 ... 8192) {
 			//samplel = Math.sin((i + e.position) * TWO_PI_OVER_SR * freq_left);
 			//sampler = Math.sin((i + e.position) * TWO_PI_OVER_SR * freq_right);
