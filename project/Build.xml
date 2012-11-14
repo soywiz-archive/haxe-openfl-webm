@@ -153,7 +153,7 @@
 	<ext value=".ndll" unless="mobile"/>
 	<files id="common" />	
 	<files id="libs" />	
-	<files id="libvpx" if="macos" />	
+	<files id="libvpx-generic" if="macos" />	
 
 	<flag value="-libpath:../libs/Windows" if="windows"/>
 	<lib name="vpx.lib" if="windows"/>
