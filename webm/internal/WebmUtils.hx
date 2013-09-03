@@ -1,9 +1,9 @@
 package webm.internal;
 import haxe.Timer;
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.PixelSnapping;
-import nme.display.Sprite;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.PixelSnapping;
+import flash.display.Sprite;
 
 class WebmUtils {
 	static public function replaceSpriteWithBitmapData(sprite:Sprite, bitmapData:BitmapData):Void {

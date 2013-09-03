@@ -33,7 +33,6 @@
 <compilerflag value="-I../libs.src/libvpx" />
 <compilerflag value="-I${ANDROID_NDK_ROOT}/sources/cpufeatures" if="android"/>
 
-<file name="common/HxWebm.cpp" />
 <file name="common/ExternalInterface.cpp" />
 
 </files>
@@ -148,7 +147,7 @@
 <file name="libvpx-generic/vpx_config.c" />
 </files>
 	
-<target id="NDLL" output="${name_prefix}nme-webm${name_extra}" tool="linker" toolid="${ndll-tool}">
+<target id="NDLL" output="${name_prefix}openfl-webm${name_extra}" tool="linker" toolid="${ndll-tool}">
 	<outdir name="../ndll/${BINDIR}" />
 	<ext value=".ndll" unless="mobile"/>
 	<files id="common" />	

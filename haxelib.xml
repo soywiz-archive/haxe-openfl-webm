@@ -1,6 +1,6 @@
-<project name="nme-webm" url="https://github.com/soywiz/haxe-nme-webm" license="MIT">
+<project name="openfl-webm" url="https://github.com/soywiz/haxe-openfl-webm" license="MIT">
 	<user name="soywiz"/>
-	<tag v="nme"/>
+	<tag v="openfl"/>
 	<tag v="cpp"/>
 	<tag v="neko"/>
 	<tag v="webm"/>
@@ -9,8 +9,8 @@
 	<tag v="vorbis"/>
 	<tag v="video"/>
 	<tag v="formats"/>
-	<description>NME haxe extensions for decoding webm videos (mkv+vp8+vorbis).</description>
+	<description>OPENFL haxe extensions for decoding webm videos (mkv+vp8+vorbis).</description>
 	<version name="0.0.4">New builds.</version>
-	<depends name="nme"/>
+	<depends name="openfl"/>
 	<depends name="hxcpp"/>
 </project>

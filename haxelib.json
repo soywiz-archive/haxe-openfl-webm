@@ -1,0 +1,14 @@
+{
+  "name": "openfl-webm",
+  "license": "MIT",
+  "tags": ["openfl","cpp","neko","webm","mkv","vp8","vorbis","video","formats"],
+  "description": "OPENFL haxe extensions for decoding webm videos (mkv+vp8+vorbis).",
+  "contributors": ["soywiz"],
+  "releasenote": "New builds.",
+  "version": "0.0.4",
+  "url": "https://github.com/soywiz/haxe-openfl-webm",
+  "dependencies": {
+    "openfl": "",
+    "hxcpp": ""
+  }
+}

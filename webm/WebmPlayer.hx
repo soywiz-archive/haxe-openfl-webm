@@ -1,16 +1,16 @@
 package webm;
 import haxe.io.Bytes;
 import haxe.io.BytesData;
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.PixelSnapping;
-import nme.display.Sprite;
-import nme.events.Event;
-import nme.events.EventDispatcher;
-import nme.events.SampleDataEvent;
-import nme.media.Sound;
-import nme.utils.ByteArray;
-import nme.utils.Endian;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.PixelSnapping;
+import flash.display.Sprite;
+import flash.events.Event;
+import flash.events.EventDispatcher;
+import flash.events.SampleDataEvent;
+import flash.media.Sound;
+import flash.utils.ByteArray;
+import flash.utils.Endian;
 import webm.internal.WebmUtils;
 
 class WebmPlayer extends EventDispatcher {
@@ -147,8 +147,8 @@ class WebmPlayer extends EventDispatcher {
 		//trace("DECODE AUDIO FRAME! " + getElapsedTime() + ":" + time);
 	}
 	
-	static var hx_webm_decoder_create = cpp.Lib.load("nme-webm", "hx_webm_decoder_create", 1);
-	static var hx_webm_decoder_get_info = cpp.Lib.load("nme-webm", "hx_webm_decoder_get_info", 1);
-	static var hx_webm_decoder_has_more = cpp.Lib.load("nme-webm", "hx_webm_decoder_has_more", 1);
-	static var hx_webm_decoder_step = cpp.Lib.load("nme-webm", "hx_webm_decoder_step", 3);
+	static var hx_webm_decoder_create = cpp.Lib.load("openfl-webm", "hx_webm_decoder_create", 1);
+	static var hx_webm_decoder_get_info = cpp.Lib.load("openfl-webm", "hx_webm_decoder_get_info", 1);
+	static var hx_webm_decoder_has_more = cpp.Lib.load("openfl-webm", "hx_webm_decoder_has_more", 1);
+	static var hx_webm_decoder_step = cpp.Lib.load("openfl-webm", "hx_webm_decoder_step", 3);
 }

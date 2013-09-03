@@ -22,6 +22,7 @@ class WebmIoFile extends WebmIo {
 			case 0: SeekBegin;
 			case 1: SeekCur;
 			case 2: SeekEnd;
+			default: SeekCur;
 		});
 		return 0;
 	}

@@ -1,23 +1,19 @@
 package webm;
 import haxe.io.Bytes;
 import haxe.io.BytesData;
-import nme.display.Bitmap;
-import nme.display.PixelSnapping;
-import nme.display.Sprite;
-import nme.events.Event;
-import nme.utils.Endian;
-import nme.utils.Timer;
+import flash.display.Bitmap;
+import flash.display.PixelSnapping;
+import flash.display.Sprite;
+import flash.events.Event;
+import flash.utils.Endian;
+import flash.utils.Timer;
 import sys.io.File;
 import sys.io.FileInput;
 import webm.internal.WebmUtils;
-#if (cpp || neko)
-import neash.utils.ByteArray;
-#else
-import nme.utils.ByteArray;
-#end
-import nme.display.BitmapData;
-import nme.errors.Error;
-import nme.geom.Rectangle;
+import flash.utils.ByteArray;
+import flash.display.BitmapData;
+import flash.errors.Error;
+import flash.geom.Rectangle;
 
 class Webm {
 	static public function getVpxDecoderVersion():String {
@@ -160,9 +156,9 @@ class Webm {
 		return hx_create_io(read, seek, tell);
 	}
 	
-	static var hx_vpx_codec_iface_name:Void -> String = cpp.Lib.load("nme-webm", "hx_vpx_codec_iface_name", 0);
-	static var hx_vpx_codec_dec_init:Void -> Dynamic = cpp.Lib.load("nme-webm", "hx_vpx_codec_dec_init", 0);
-	static var hx_vpx_codec_decode = cpp.Lib.load("nme-webm", "hx_vpx_codec_decode", 2);
-	static var hx_vpx_codec_get_frame = cpp.Lib.load("nme-webm", "hx_vpx_codec_get_frame", 1);
-	static var hx_create_io = cpp.Lib.load("nme-webm", "hx_create_io", 3);
+	static var hx_vpx_codec_iface_name:Void -> String = cpp.Lib.load("openfl-webm", "hx_vpx_codec_iface_name", 0);
+	static var hx_vpx_codec_dec_init:Void -> Dynamic = cpp.Lib.load("openfl-webm", "hx_vpx_codec_dec_init", 0);
+	static var hx_vpx_codec_decode = cpp.Lib.load("openfl-webm", "hx_vpx_codec_decode", 2);
+	static var hx_vpx_codec_get_frame = cpp.Lib.load("openfl-webm", "hx_vpx_codec_get_frame", 1);
+	static var hx_create_io = cpp.Lib.load("openfl-webm", "hx_create_io", 3);
 }

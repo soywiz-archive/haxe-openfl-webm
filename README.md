@@ -5,10 +5,10 @@ Information about webm:
 
 ## Setup/Installing:
 
-You need HAXE and NME. http://www.haxenme.org/
+You need HAXE and OPENFL. http://openfl.org/
 
 ```
-haxelib install nme-webm
+haxelib install openfl-webm
 ```
 
 ## Simple Example:
