@@ -30,7 +30,7 @@
 <compilerflag value="-Ilibogg/include" />
 <compilerflag value="-Ilibvorbis/include" />
 <compilerflag value="-Ilibvorbis/lib" />
-<compilerflag value="-I../libs.src/libvpx" />
+<compilerflag value="-Ilibvpx-generic" />
 <compilerflag value="-I${ANDROID_NDK_ROOT}/sources/cpufeatures" if="android"/>
 
 <file name="common/ExternalInterface.cpp" />
@@ -46,7 +46,7 @@
 <compilerflag value="-Ilibogg/include" />
 <compilerflag value="-Ilibvorbis/include" />
 <compilerflag value="-Ilibvorbis/lib" />
-<compilerflag value="-I../libs.src/libvpx" />
+<compilerflag value="-Ilibvpx-generic" />
 <compilerflag value="-I${ANDROID_NDK_ROOT}/sources/cpufeatures" if="android"/>
 
 <file name="libwebm/vttreader.cc" />

@@ -14,6 +14,7 @@
 #include <hx/CFFI.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <cstdlib>
 #include <assert.h>
 #include <math.h>
@@ -631,7 +632,7 @@ extern "C" {
 					}
 				}
 			
-				printf("Vorbis: version:%d, channels:%d, rate:%d\n", mVorbisInfo.version, mVorbisInfo.channels, mVorbisInfo.rate);
+				printf("Vorbis: version:%d, channels:%d, rate:%ld\n", mVorbisInfo.version, mVorbisInfo.channels, mVorbisInfo.rate);
 				
 				status = vorbis_synthesis_init(&mVorbisDsp, &mVorbisInfo); 
 				if (status < 0) {
@@ -838,8 +839,8 @@ extern "C" {
 
 						printf("\t\tAudio Channels\t\t: %lld\n", pAudioTrack->GetChannels());
 						printf("\t\tAudio BitDepth\t\t: %lld\n", pAudioTrack->GetBitDepth());
-						printf("\t\tAddio Sample Rate\t: %.3f\n", pAudioTrack->GetSamplingRate());
-						printf("\t\tAddio Private Data\t: %p, %d\n", privateDataPointer, privateDataSize);
+						printf("\t\tAudio Sample Rate\t: %.3f\n", pAudioTrack->GetSamplingRate());
+						printf("\t\tAudio Private Data\t: %p, %ld\n", privateDataPointer, privateDataSize);
 						
 						this->vorbisDecoder->parseHeader(privateDataPointer, privateDataSize);
 					}
